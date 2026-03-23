@@ -14,6 +14,7 @@
             --text-dark: #1f2937;
             --white: #ffffff;
             --accent-success: #10b981;
+            --border: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -90,11 +91,27 @@
         .stat-card small { color: #6b7280; display: block; margin-bottom: 5px; }
 
         /* Form Styling */
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
         .editor-container {
             background: white;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .preview-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            max-height: 1000px;
+            overflow-y: auto;
+            border: 2px dashed var(--border);
         }
 
         .form-group { margin-bottom: 1.5rem; }
@@ -129,6 +146,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-top: 1rem;
         }
 
         .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -146,13 +164,29 @@
         }
         .good { background: #d1fae5; color: #065f46; }
         
+        /* Preview Styles */
+        .preview-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        .preview-content h2 { margin: 1.5rem 0 0.5rem; color: var(--text-dark); }
+        .preview-content p { margin-bottom: 1rem; }
+        .preview-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .preview-content th, .preview-content td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .preview-content th { background-color: #f9fafb; }
+
+        @media (max-width: 1024px) {
+            .editor-grid { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .main-content { margin-left: 0; }
             .stats-grid { grid-template-columns: 1fr; }
         }
 
-        /* Deployment Instructions Modal */
+        /* Modal */
         #deployModal {
             display: none;
             position: fixed;
@@ -189,7 +223,7 @@
         <div class="header-panel">
             <div>
                 <h1>Editor POSHEET Profesional</h1>
-                <p style="color: #6b7280;">Siap untuk dipublikasikan di GitHub Pages.</p>
+                <p style="color: #6b7280;">Lakukan pratinjau sebelum mempublikasikan konten berkualitas tinggi Anda.</p>
             </div>
             <div id="date-now" style="font-weight: 600;"></div>
         </div>
@@ -197,125 +231,170 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <small>Kualitas SEO</small>
-                <h3 id="seo-score">Menunggu Data...</h3>
+                <h3 id="seo-score">Menunggu Konten...</h3>
             </div>
             <div class="stat-card">
-                <small>Status Database</small>
-                <h3 style="color: var(--accent-success);">Cloud Live (Spreadsheet)</h3>
+                <small>Integrasi Database</small>
+                <h3 style="color: var(--accent-success);">Tersambung (G-Sheets)</h3>
             </div>
             <div class="stat-card">
-                <small>Mode</small>
-                <h3>Production Ready</h3>
+                <small>Kesehatan Konten</small>
+                <h3 id="health-status">Standar</h3>
             </div>
         </div>
 
-        <div class="editor-container">
-            <form id="cmsForm">
-                <div class="form-group">
-                    <label>Judul Artikel <span id="title-count" class="seo-badge">0</span></label>
-                    <input type="text" id="judul" placeholder="Masukkan judul yang memikat..." required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="editor-grid">
+            <!-- Left: Editor Form -->
+            <div class="editor-container">
+                <form id="cmsForm">
                     <div class="form-group">
-                        <label>URL Gambar (Bebas Lisensi)</label>
-                        <input type="url" id="gambar" placeholder="https://images.unsplash.com/..." required>
+                        <label>Judul Artikel <span id="title-count" class="seo-badge">0</span></label>
+                        <input type="text" id="judul" placeholder="Judul artikel profesional..." required>
                     </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>URL Gambar (Unsplash)</label>
+                            <input type="url" id="gambar" placeholder="https://images.unsplash.com/..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>Slug (Otomatis)</label>
+                            <input type="text" id="slug" readonly>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label>Slug (Otomatis)</label>
-                        <input type="text" id="slug" placeholder="slug-otomatis" required readonly>
+                        <label>Kategori</label>
+                        <select id="kategori">
+                            <option value="Teknologi">Teknologi & AI</option>
+                            <option value="Bisnis">Strategi Bisnis</option>
+                            <option value="Wawasan">Wawasan & Opini</option>
+                            <option value="Gaya Hidup">Gaya Hidup Modern</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meta Deskripsi <span id="meta-count" class="seo-badge">0</span></label>
+                        <input type="text" id="meta_deskripsi" placeholder="Ringkasan untuk hasil pencarian Google..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Konten (HTML POSHEET) <span id="word-count" class="seo-badge">0 Kata</span></label>
+                        <textarea id="konten" placeholder="Tempelkan kode HTML POSHEET di sini..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i data-lucide="send"></i> Publikasikan Konten Sekarang
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Real-time Preview -->
+            <div class="preview-container">
+                <div style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="eye" size="18"></i> Live Preview
+                    </h3>
+                    <span style="font-size: 0.8rem; color: #6b7280;">(Hanya Simulasi Tampilan)</span>
+                </div>
+                <div id="live-preview" class="preview-content">
+                    <div style="color: #9ca3af; text-align: center; padding: 5rem 0;">
+                        Isi form di samping untuk melihat pratinjau artikel Anda di sini.
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Kategori</label>
-                    <select id="kategori">
-                        <option value="Teknologi">Teknologi & AI</option>
-                        <option value="Bisnis">Strategi Bisnis</option>
-                        <option value="Wawasan">Wawasan & Opini</option>
-                        <option value="Gaya Hidup">Gaya Hidup Modern</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Meta Deskripsi SEO <span id="meta-count" class="seo-badge">0</span></label>
-                    <input type="text" id="meta_deskripsi" placeholder="Ringkasan singkat untuk Google..." required>
-                </div>
-
-                <div class="form-group">
-                    <label>Konten Artikel (HTML POSHEET) <span id="word-count" class="seo-badge">0 Words</span></label>
-                    <textarea id="konten" placeholder="Tempelkan kode HTML dari instruksi POSHEET di sini..." required></textarea>
-                    <p class="helper-text">Tips: Gunakan struktur logis (h2, p, table) untuk kualitas Evergreen.</p>
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <i data-lucide="globe"></i> Publikasikan ke Nuansa.net
-                </button>
-            </form>
+            </div>
         </div>
     </main>
 
     <div id="deployModal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 1rem;">Cara Deploy ke GitHub</h2>
-            <ol style="margin-left: 1.5rem; line-height: 1.8;">
-                <li>Buat repositori baru di GitHub.</li>
-                <li>Upload file <b>index.html</b> dan <b>admin.html</b>.</li>
-                <li>Masuk ke <b>Settings > Pages</b>.</li>
-                <li>Pilih branch <b>main</b> dan klik <b>Save</b>.</li>
-                <li>Website Anda akan aktif dalam hitungan menit!</li>
-            </ol>
-            <button onclick="hideDeploy()" style="margin-top: 1.5rem; padding: 0.5rem 1rem; cursor: pointer;">Tutup</button>
+            <h2 style="margin-bottom: 1rem;">Panduan Deployment</h2>
+            <p style="margin-bottom: 1rem; color: #4b5563;">Pastikan Anda sudah mengunggah index.html dan admin.html ke repositori GitHub Anda.</p>
+            <button onclick="hideDeploy()" style="padding: 0.5rem 1rem; cursor: pointer; border-radius: 6px; border: 1px solid #ccc;">Mengerti</button>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
 
-        // URL Google Apps Script Anda sudah terpasang di sini
         const API_URL = "https://script.google.com/macros/s/AKfycbwtf3reweTkSYSylrNxBto6_icTTJy4Ap1OfRVPZVMtTEhh6sE-OSCe9fj7_3jqPcHi/exec";
 
         document.getElementById('date-now').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-        function showDeploy() { document.getElementById('deployModal').style.display = 'flex'; }
-        function hideDeploy() { document.getElementById('deployModal').style.display = 'none'; }
 
         const judulInput = document.getElementById('judul');
         const slugInput = document.getElementById('slug');
         const metaInput = document.getElementById('meta_deskripsi');
         const kontenInput = document.getElementById('konten');
+        const previewArea = document.getElementById('live-preview');
+        const gambarInput = document.getElementById('gambar');
+
+        function updatePreview() {
+            const judul = judulInput.value || "Judul Artikel";
+            const konten = kontenInput.value || "<p>Konten artikel akan tampil di sini...</p>";
+            const gambar = gambarInput.value ? `<img src="${gambarInput.value}" style="width:100%; border-radius:8px; margin-bottom:1rem;">` : "";
+            
+            previewArea.innerHTML = `
+                ${gambar}
+                <h1 style="margin-bottom:1rem; line-height:1.2;">${judul}</h1>
+                <div class="preview-article-body">${konten}</div>
+            `;
+            
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            const titleLen = judulInput.value.length;
+            const metaLen = metaInput.value.length;
+            const textContent = kontenInput.value.replace(/<[^>]*>/g, ' ');
+            const words = textContent.trim() === "" ? 0 : textContent.trim().split(/\s+/).length;
+
+            document.getElementById('title-count').innerText = `${titleLen} Chars`;
+            document.getElementById('meta-count').innerText = `${metaLen} Chars`;
+            document.getElementById('word-count').innerText = `${words} Kata`;
+
+            // Update Badges
+            document.getElementById('title-count').className = (titleLen >= 40 && titleLen <= 70) ? 'seo-badge good' : 'seo-badge';
+            document.getElementById('meta-count').className = (metaLen >= 120 && metaLen <= 160) ? 'seo-badge good' : 'seo-badge';
+            document.getElementById('word-count').className = (words >= 500) ? 'seo-badge good' : 'seo-badge';
+
+            // SEO Score Logic
+            const scoreLabel = document.getElementById('seo-score');
+            const healthLabel = document.getElementById('health-status');
+            
+            if (words > 800) {
+                scoreLabel.innerText = "Sempurna (Expert)";
+                scoreLabel.style.color = "var(--accent-success)";
+                healthLabel.innerText = "Evergreen High";
+            } else if (words > 500) {
+                scoreLabel.innerText = "Bagus";
+                scoreLabel.style.color = "#059669";
+                healthLabel.innerText = "Standar Profesional";
+            } else {
+                scoreLabel.innerText = "Butuh Optimasi";
+                scoreLabel.style.color = "#dc2626";
+                healthLabel.innerText = "Konten Pendek";
+            }
+        }
 
         judulInput.addEventListener('input', () => {
-            const slug = judulInput.value.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-            slugInput.value = slug;
-            updateCounts();
+            slugInput.value = judulInput.value.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+            updatePreview();
         });
-
-        metaInput.addEventListener('input', updateCounts);
-        kontenInput.addEventListener('input', updateCounts);
-
-        function updateCounts() {
-            document.getElementById('title-count').innerText = `${judulInput.value.length} Chars`;
-            document.getElementById('meta-count').innerText = `${metaInput.value.length} Chars`;
-            const words = kontenInput.value.replace(/<[^>]*>/g, ' ').trim().split(/\s+/).length;
-            document.getElementById('word-count').innerText = `${words} Words`;
-            
-            const scoreElement = document.getElementById('seo-score');
-            if (words > 500) scoreElement.innerText = "Sangat Baik";
-            else if (words > 200) scoreElement.innerText = "Cukup";
-            else scoreElement.innerText = "Kurang Mendalam";
-        }
+        
+        gambarInput.addEventListener('input', updatePreview);
+        metaInput.addEventListener('input', updateMetrics);
+        kontenInput.addEventListener('input', updatePreview);
 
         document.getElementById('cmsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Mempublikasikan...`;
+            submitBtn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Memproses Publikasi...`;
             lucide.createIcons();
 
             const payload = {
                 judul: judulInput.value,
-                gambar: document.getElementById('gambar').value,
+                gambar: gambarInput.value,
                 slug: slugInput.value,
                 meta_deskripsi: metaInput.value,
                 konten: kontenInput.value,
@@ -323,31 +402,26 @@
             };
 
             try {
-                // Mengirimkan data ke Spreadsheet melalui URL Apps Script yang Anda berikan
-                await fetch(API_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify(payload) 
-                });
-                
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
                 Swal.fire({
-                    title: 'Berhasil Terbit!',
-                    text: 'Artikel profesional Anda telah berhasil masuk ke database Nuansa.',
+                    title: 'Berhasil!',
+                    text: 'Artikel Anda telah terbit. Silakan periksa halaman utama.',
                     icon: 'success',
                     confirmButtonColor: '#2563eb'
                 });
-                
                 document.getElementById('cmsForm').reset();
-                document.querySelectorAll('.seo-badge').forEach(b => b.innerText = '0');
-                
+                previewArea.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 5rem 0;">Isi form di samping untuk melihat pratinjau...</div>`;
             } catch (error) {
-                Swal.fire('Error', 'Gagal terhubung ke database. Periksa koneksi atau URL Apps Script Anda.', 'error');
+                Swal.fire('Gagal', 'Terjadi kesalahan teknis saat mengirim data.', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i data-lucide="globe"></i> Publikasikan ke Nuansa.net`;
+                submitBtn.innerHTML = `<i data-lucide="send"></i> Publikasikan Konten Sekarang`;
                 lucide.createIcons();
             }
         });
+
+        function showDeploy() { document.getElementById('deployModal').style.display = 'flex'; }
+        function hideDeploy() { document.getElementById('deployModal').style.display = 'none'; }
     </script>
 </body>
 </html>
