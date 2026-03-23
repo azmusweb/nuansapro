@@ -3,518 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro CMS - Enterprise Edition</title>
-    <!-- Framework & Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <title>Nuansa.net - Wawasan Mendalam & Profesional</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-        
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --sidebar-bg: #0f172a;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent: #2563eb;
+            --border: #e5e7eb;
+            --card-bg: #ffffff;
         }
 
-        body { 
-            font-family: 'Plus+Jakarta+Sans', sans-serif; 
-            scroll-behavior: smooth;
+        [data-theme="dark"] {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent: #3b82f6;
+            --border: #374151;
+            --card-bg: #1f2937;
         }
 
-        .sidebar-item.active { 
-            background-color: rgba(37, 99, 235, 0.1); 
-            color: #60a5fa; 
-            border-left: 4px solid var(--primary); 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        .loader-spin {
-            animation: spin 1s linear infinite;
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        [v-cloak] { display: none; }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-tools {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        button#theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Card Grid */
+        #content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: var(--bg-secondary);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-read {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        /* Simple Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 1rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-    <!-- Preloader -->
-    <div id="preloader" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full loader-spin"></div>
-        <p class="mt-4 text-slate-500 font-medium animate-pulse">Menyiapkan Dashboard...</p>
-    </div>
-
-    <!-- Layout Auth -->
-    <div id="view-auth" class="hidden min-h-screen flex items-center justify-center bg-[#0f172a] p-4 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-            <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500 rounded-full blur-[120px]"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500 rounded-full blur-[120px]"></div>
+    <header>
+        <a href="#" class="logo">NUANSA</a>
+        <div class="nav-tools">
+            <button id="theme-toggle" title="Ganti Tema">
+                <i data-lucide="moon"></i>
+            </button>
         </div>
-        
-        <div class="w-full max-w-md glass-card bg-white rounded-3xl shadow-2xl p-8 relative z-10">
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 text-white shadow-xl shadow-blue-500/20">
-                    <i data-lucide="shield-check" class="w-8 h-8"></i>
-                </div>
-                <h1 id="auth-title" class="text-3xl font-bold text-slate-800 tracking-tight">Pro CMS</h1>
-                <p id="auth-subtitle" class="text-slate-500 mt-2">Enterprise Content Management</p>
-            </div>
+    </header>
 
-            <div id="auth-error" class="hidden bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm border border-red-100 flex items-center gap-3">
-                <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                <span id="error-message"></span>
-            </div>
+    <main>
+        <section class="hero">
+            <h1>Eksplorasi Wawasan Tanpa Batas</h1>
+            <p>Artikel mendalam, profesional, dan evergreen untuk masa depan yang lebih baik.</p>
+        </section>
 
-            <form id="form-auth" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-700 ml-1">Email Corporate</label>
-                    <input type="email" id="email" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all" placeholder="name@company.com">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-700 ml-1">Password</label>
-                    <input type="password" id="password" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all" placeholder="••••••••">
-                </div>
-                <button type="submit" id="btn-auth-submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-600/25 transition-all flex items-center justify-center gap-2 group">
-                    <span>Masuk ke System</span>
-                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                </button>
-            </form>
+        <div id="loading">Sedang memuat wawasan terbaru...</div>
+        <div id="content-grid"></div>
+    </main>
 
-            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-                <button onclick="toggleAuthMode()" id="btn-toggle-auth" class="text-sm text-slate-600 font-medium hover:text-blue-600 transition-colors">
-                    Belum punya akses? <span class="text-blue-600 font-bold">Request Account</span>
-                </button>
-            </div>
-        </div>
-    </div>
+    <footer>
+        <p>&copy; 2024 Nuansa.net. Dibuat dengan integritas tinggi.</p>
+    </footer>
 
-    <!-- Main Dashboard Container -->
-    <div id="view-admin" class="hidden min-h-screen flex flex-col md:flex-row">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-72 bg-[#0f172a] text-slate-400 flex flex-col sticky top-0 h-screen z-50">
-            <div class="p-8 flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
-                    <i data-lucide="layers" class="w-6 h-6"></i>
-                </div>
-                <span class="text-xl font-bold text-white tracking-tight">Pro<span class="text-blue-500">CMS</span></span>
-            </div>
-            
-            <nav class="flex-1 px-4 space-y-2">
-                <div class="text-[10px] font-bold uppercase tracking-[2px] text-slate-600 px-4 mb-2">Menu Utama</div>
-                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="sidebar-item active w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> 
-                    <span class="font-semibold text-sm">Overview</span>
-                </button>
-                <button onclick="switchTab('posts')" id="tab-posts" class="sidebar-item w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group hover:bg-slate-800/50">
-                    <i data-lucide="pen-tool" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> 
-                    <span class="font-semibold text-sm">Post Manager</span>
-                </button>
-                
-                <div class="text-[10px] font-bold uppercase tracking-[2px] text-slate-600 px-4 mt-8 mb-2">Sistem</div>
-                <button onclick="switchTab('settings')" id="tab-settings" class="sidebar-item w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group hover:bg-slate-800/50">
-                    <i data-lucide="settings-2" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> 
-                    <span class="font-semibold text-sm">Integrasi API</span>
-                </button>
-            </nav>
+    <script>
+        // CONFIGURATION: Ganti dengan URL Web App Anda dari Google Apps Script
+        const API_URL = "URL_WEB_APP_ANDA";
 
-            <!-- User Footer Sidebar -->
-            <div class="p-6 border-t border-slate-800 bg-slate-900/30">
-                <div class="flex items-center gap-3 mb-6 p-2 rounded-2xl bg-slate-800/40 border border-slate-700/50">
-                    <div id="user-initial" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                        ?
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p id="user-display-email" class="text-xs font-bold text-white truncate italic">loading...</p>
-                        <p class="text-[9px] uppercase tracking-widest text-blue-400 font-bold">Authorized User</p>
-                    </div>
-                </div>
-                <button onclick="actionLogout()" class="w-full py-3 bg-red-500/10 hover:bg-red-600 text-red-500 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-red-500/20">
-                    <i data-lucide="power" class="w-4 h-4"></i> Sign Out System
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content Section -->
-        <main class="flex-1 flex flex-col min-w-0">
-            <!-- Global Header -->
-            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-10 sticky top-0 z-40">
-                <div class="flex items-center gap-4">
-                    <h2 id="header-title" class="text-xl font-extrabold text-slate-800 capitalize tracking-tight">Dashboard Overview</h2>
-                </div>
-                <div class="flex items-center gap-6">
-                    <div class="hidden sm:flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-100">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                        Secure Connection
-                    </div>
-                    <button class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-colors relative">
-                        <i data-lucide="bell" class="w-5 h-5"></i>
-                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-white"></span>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Dynamic Content -->
-            <div class="p-10 max-w-7xl mx-auto w-full flex-1">
-                
-                <!-- TAB: Dashboard -->
-                <div id="content-dashboard" class="tab-content space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                    <!-- Stats Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="glass-card p-8 rounded-[32px] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
-                            <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                                <i data-lucide="monitor" class="w-7 h-7"></i>
-                            </div>
-                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Target Web</h4>
-                            <p id="ui-stat-domain" class="text-xl font-extrabold text-slate-900 truncate">Sistem Belum Terhubung</p>
-                        </div>
-                        <div class="glass-card p-8 rounded-[32px] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
-                            <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
-                                <i data-lucide="database" class="w-7 h-7"></i>
-                            </div>
-                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">G-Sheets Linked</h4>
-                            <p id="ui-stat-sheet" class="text-xl font-extrabold text-slate-900 truncate">-</p>
-                        </div>
-                        <div class="glass-card p-8 rounded-[32px] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
-                            <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                                <i data-lucide="check-circle-2" class="w-7 h-7"></i>
-                            </div>
-                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Artikel Terbit</h4>
-                            <p id="ui-stat-count" class="text-3xl font-black text-slate-900">0</p>
-                        </div>
-                    </div>
-
-                    <!-- Welcome Banner -->
-                    <div class="bg-gradient-to-br from-blue-700 to-indigo-900 rounded-[40px] p-12 text-white relative overflow-hidden shadow-2xl shadow-blue-900/20">
-                        <div class="relative z-10">
-                            <h2 class="text-4xl font-black mb-4 leading-tight">Selamat Datang di Portal CMS.</h2>
-                            <p class="text-blue-100 text-lg max-w-xl leading-relaxed mb-10">Database Anda saat ini terhubung ke Google Sheets untuk kemudahan manajemen konten tanpa memerlukan database SQL yang rumit.</p>
-                            <div class="flex flex-wrap gap-4">
-                                <button onclick="switchTab('posts')" class="bg-white text-blue-700 px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3">
-                                    <i data-lucide="plus-circle" class="w-5 h-5"></i> Tulis Konten Baru
-                                </button>
-                                <button onclick="window.open('https://docs.google.com/spreadsheets', '_blank')" class="bg-blue-600/30 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition-all flex items-center gap-3">
-                                    <i data-lucide="external-link" class="w-5 h-5"></i> Buka Spreadsheet
-                                </button>
-                            </div>
-                        </div>
-                        <div class="absolute right-[-5%] top-[-10%] opacity-10">
-                            <i data-lucide="layout" class="w-96 h-96"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB: Posts -->
-                <div id="content-posts" class="tab-content hidden space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div>
-                            <h3 class="text-2xl font-black text-slate-800 tracking-tight">Post Manager</h3>
-                            <p class="text-slate-500 font-medium">Data real-time dari Google Sheets Database</p>
-                        </div>
-                        <div class="flex gap-3">
-                            <button onclick="fetchSheetData()" class="px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
-                                <i data-lucide="rotate-cw" class="w-4 h-4"></i> Refresh
-                            </button>
-                            <button onclick="openModalEditor()" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
-                                <i data-lucide="plus" class="w-5 h-5"></i> Buat Artikel
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-[32px] overflow-hidden border-none shadow-sm">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-50/80 border-b border-slate-100">
-                                <tr>
-                                    <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Judul Artikel</th>
-                                    <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest">Slug / URL</th>
-                                    <th class="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-posts-body" class="divide-y divide-slate-50">
-                                <tr>
-                                    <td colspan="3" class="px-8 py-24 text-center">
-                                        <div class="flex flex-col items-center opacity-40">
-                                            <i data-lucide="cloud-off" class="w-16 h-16 mb-4"></i>
-                                            <p class="text-lg font-bold">Belum Ada Data Terhubung</p>
-                                            <p class="text-sm">Silakan atur Spreadsheet ID Anda di menu Integrasi.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TAB: Settings -->
-                <div id="content-settings" class="tab-content hidden space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                    <div class="max-w-3xl glass-card rounded-[40px] shadow-sm overflow-hidden border-none">
-                        <div class="p-10 border-b border-slate-100 bg-slate-50/50">
-                            <h3 class="text-2xl font-black text-slate-800 mb-2">Integrasi API & Cloud</h3>
-                            <p class="text-slate-500 font-medium leading-relaxed">Konfigurasi ini akan menghubungkan dashboard Anda ke endpoint eksternal.</p>
-                        </div>
-                        <div class="p-10">
-                            <form id="form-settings" class="space-y-8">
-                                <div class="space-y-4">
-                                    <label class="flex items-center gap-3 text-sm font-black text-slate-700 uppercase tracking-wider">
-                                        <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center"><i data-lucide="globe" class="w-4 h-4"></i></span>
-                                        Domain Utama Web
-                                    </label>
-                                    <input type="text" id="set-domain" class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold" placeholder="https://domainanda.com">
-                                </div>
-                                <div class="space-y-4">
-                                    <label class="flex items-center gap-3 text-sm font-black text-slate-700 uppercase tracking-wider">
-                                        <span class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i></span>
-                                        Spreadsheet ID
-                                    </label>
-                                    <input type="text" id="set-sheet-id" class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:bg-white outline-none transition-all font-semibold" placeholder="1abc... (Ambil dari URL Spreadsheet)">
-                                </div>
-                                <div class="space-y-4">
-                                    <label class="flex items-center gap-3 text-sm font-black text-slate-700 uppercase tracking-wider">
-                                        <span class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center"><i data-lucide="zap" class="w-4 h-4"></i></span>
-                                        Google Script Web App URL
-                                    </label>
-                                    <input type="text" id="set-api-url" class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-emerald-500 focus:bg-white outline-none transition-all font-semibold" placeholder="https://script.google.com/macros/s/...">
-                                </div>
-                                <div class="pt-8 border-t border-slate-100">
-                                    <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-black py-5 rounded-[20px] transition-all shadow-xl flex items-center justify-center gap-3">
-                                        <i data-lucide="save" class="w-5 h-5"></i> Simpan Konfigurasi Cloud
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-10 right-10 z-[200] flex flex-col gap-3 pointer-events-none"></div>
-
-    <!-- Modal Form Editor (Placeholder) -->
-    <div id="modal-editor" class="fixed inset-0 z-[150] bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-4xl rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div class="p-8 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="text-2xl font-black text-slate-800">Editor Artikel</h3>
-                <button onclick="closeModalEditor()" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="p-10 max-h-[70vh] overflow-y-auto space-y-6">
-                <p class="text-slate-500 italic">Antarmuka penulisan konten sedang diinisialisasi...</p>
-                <!-- Editor content goes here -->
-            </div>
-            <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-                <button onclick="closeModalEditor()" class="px-8 py-3 font-bold text-slate-500">Batal</button>
-                <button class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20">Simpan Ke Cloud</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase Core & App Logic -->
-    <script type="module">
-        // 1. Firebase Modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // 2. Constants & Env (Provided by Environment)
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'enterprise-cms-gsheet';
-
-        // 3. State Management
-        let state = {
-            user: null,
-            config: { domain: '', sheetId: '', apiUrl: '' },
-            isRegister: false,
-            activeTab: 'dashboard'
-        };
-
-        // 4. UI Handlers
-        window.switchTab = (tabName) => {
-            state.activeTab = tabName;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            
-            document.getElementById('header-title').textContent = tabName.replace('-', ' ');
-            lucide.createIcons();
-        };
-
-        window.toggleAuthMode = () => {
-            state.isRegister = !state.isRegister;
-            document.getElementById('auth-title').textContent = state.isRegister ? "Daftar Akun Baru" : "Pro CMS Login";
-            document.getElementById('btn-auth-submit').querySelector('span').textContent = state.isRegister ? "Create Enterprise Account" : "Masuk ke System";
-            document.getElementById('btn-toggle-auth').innerHTML = state.isRegister ? 
-                `Sudah memiliki akses? <span class="text-blue-600 font-bold">Login System</span>` : 
-                `Belum punya akses? <span class="text-blue-600 font-bold">Request Account</span>`;
-            lucide.createIcons();
-        };
-
-        window.actionLogout = async () => {
-            try { await signOut(auth); } catch (e) { notify("Gagal logout", "error"); }
-        };
-
-        window.openModalEditor = () => document.getElementById('modal-editor').classList.remove('hidden');
-        window.closeModalEditor = () => document.getElementById('modal-editor').classList.add('hidden');
-
-        const notify = (msg, type = 'success') => {
-            const container = document.getElementById('toast');
-            const el = document.createElement('div');
-            el.className = `p-4 rounded-2xl shadow-2xl text-white font-bold flex items-center gap-3 animate-in slide-in-from-right-10 duration-300 ${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`;
-            el.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-octagon'}" class="w-5 h-5"></i> <span>${msg}</span>`;
-            container.appendChild(el);
-            lucide.createIcons();
-            setTimeout(() => {
-                el.classList.add('animate-out', 'fade-out', 'slide-out-to-right-10');
-                setTimeout(() => el.remove(), 300);
-            }, 4000);
-        };
-
-        // 5. Firebase Auth Logic
-        onAuthStateChanged(auth, async (user) => {
-            state.user = user;
-            if (user) {
-                document.getElementById('view-auth').classList.add('hidden');
-                document.getElementById('view-admin').classList.remove('hidden');
-                document.getElementById('user-display-email').textContent = user.email;
-                document.getElementById('user-initial').textContent = user.email.charAt(0).toUpperCase();
-                
-                // Fetch & Sync Config
-                await syncConfig(user.uid);
-            } else {
-                document.getElementById('view-admin').classList.add('hidden');
-                document.getElementById('view-auth').classList.remove('hidden');
-            }
-            document.getElementById('preloader').classList.add('opacity-0', 'pointer-events-none');
-        });
-
-        document.getElementById('form-auth').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const errEl = document.getElementById('auth-error');
-            errEl.classList.add('hidden');
-
-            try {
-                if (state.isRegister) {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                    notify("Akun berhasil dibuat!");
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-            } catch (err) {
-                errEl.classList.remove('hidden');
-                document.getElementById('error-message').textContent = err.message;
-            }
-        });
-
-        // 6. Data Synchronization Logic
-        async function syncConfig(uid) {
-            const configRef = doc(db, 'artifacts', appId, 'users', uid, 'settings', 'cloud');
-            
-            // Listen real-time
-            onSnapshot(configRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    state.config = docSnap.data();
-                    updateUIFromConfig();
-                    if (state.config.sheetId) fetchSheetData();
-                }
-            }, (error) => console.error("Snapshot error:", error));
-        }
-
-        function updateUIFromConfig() {
-            document.getElementById('set-domain').value = state.config.domain || '';
-            document.getElementById('set-sheet-id').value = state.config.sheetId || '';
-            document.getElementById('set-api-url').value = state.config.apiUrl || '';
-            
-            document.getElementById('ui-stat-domain').textContent = state.config.domain || 'Not Connected';
-            document.getElementById('ui-stat-sheet').textContent = state.config.sheetId ? state.config.sheetId.substring(0, 10) + '...' : '-';
-        }
-
-        document.getElementById('form-settings').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!state.user) return;
-
-            const payload = {
-                domain: document.getElementById('set-domain').value,
-                sheetId: document.getElementById('set-sheet-id').value,
-                apiUrl: document.getElementById('set-api-url').value,
-                updatedAt: new Date().toISOString()
-            };
-
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'users', state.user.uid, 'settings', 'cloud'), payload);
-                notify("Konfigurasi Cloud Berhasil Disimpan");
-            } catch (err) {
-                notify("Gagal menyimpan data ke Firestore", "error");
-            }
-        });
-
-        // 7. Google Sheets Data Fetcher
-        window.fetchSheetData = async () => {
-            if (!state.config.sheetId) return;
-            
-            const tbody = document.getElementById('table-posts-body');
-            tbody.innerHTML = `<tr><td colspan="3" class="px-8 py-20 text-center"><div class="loader-spin inline-block w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full"></div><p class="mt-4 text-slate-500">Menarik Data Cloud...</p></td></tr>`;
-
-            try {
-                // Catatan: Anda perlu Google Apps Script Web App untuk menghindari CORS jika fetch langsung ke Google Sheets API
-                // Di sini kita gunakan endpoint CSV publik sebagai demonstrasi akses cepat
-                const url = `https://docs.google.com/spreadsheets/d/${state.config.sheetId}/gviz/tq?tqx=out:json`;
-                const response = await fetch(url);
-                const text = await response.text();
-                const json = JSON.parse(text.substr(47).slice(0, -2));
-                
-                const rows = json.table.rows;
-                tbody.innerHTML = '';
-                document.getElementById('ui-stat-count').textContent = rows.length;
-
-                rows.forEach((row, idx) => {
-                    const title = row.c[0]?.v || 'No Title';
-                    const slug = row.c[1]?.v || '/-';
-                    
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50/50 transition-colors group";
-                    tr.innerHTML = `
-                        <td class="px-8 py-5">
-                            <div class="font-bold text-slate-800">${title}</div>
-                        </td>
-                        <td class="px-8 py-5">
-                            <span class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">${slug}</span>
-                        </td>
-                        <td class="px-8 py-5 text-right">
-                            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                lucide.createIcons();
-            } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="3" class="px-8 py-20 text-center text-red-500">Gagal memuat data. Pastikan spreadsheet bersifat 'Public/Anyone with link'.</td></tr>`;
-            }
-        };
-
-        // Initialize Icons
+        // Initialize Lucide Icons
         lucide.createIcons();
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            themeToggle.innerHTML = isDark ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+            lucide.createIcons();
+        });
+
+        // Fetch Data from Google Sheets
+        async function fetchContent() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                renderContent(data);
+            } catch (error) {
+                console.error("Gagal mengambil data:", error);
+                document.getElementById('loading').innerText = "Gagal memuat konten. Pastikan API URL sudah benar.";
+            }
+        }
+
+        function renderContent(items) {
+            const grid = document.getElementById('content-grid');
+            const loader = document.getElementById('loading');
+            
+            if (items.length === 0) {
+                loader.innerText = "Belum ada artikel yang diterbitkan.";
+                return;
+            }
+
+            loader.style.display = 'none';
+            grid.innerHTML = items.map(item => `
+                <article class="card">
+                    <img src="${item.gambar || 'https://via.placeholder.com/600x400?text=Nuansa'}" alt="${item.judul}">
+                    <div class="card-body">
+                        <span class="card-tag">${item.kategori || 'Umum'}</span>
+                        <h2 class="card-title">${item.judul}</h2>
+                        <p class="card-excerpt">${item.meta_deskripsi.substring(0, 120)}...</p>
+                        <a href="?p=${item.slug}" class="btn-read">Baca Selengkapnya →</a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Start Fetching
+        window.onload = fetchContent;
     </script>
 </body>
 </html>
