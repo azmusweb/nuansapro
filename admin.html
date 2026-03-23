@@ -218,7 +218,7 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                     <div class="form-group">
-                        <label>URL Gambar (Free License)</label>
+                        <label>URL Gambar (Bebas Lisensi)</label>
                         <input type="url" id="gambar" placeholder="https://images.unsplash.com/..." required>
                     </div>
                     <div class="form-group">
@@ -245,6 +245,7 @@
                 <div class="form-group">
                     <label>Konten Artikel (HTML POSHEET) <span id="word-count" class="seo-badge">0 Words</span></label>
                     <textarea id="konten" placeholder="Tempelkan kode HTML dari instruksi POSHEET di sini..." required></textarea>
+                    <p class="helper-text">Tips: Gunakan struktur logis (h2, p, table) untuk kualitas Evergreen.</p>
                 </div>
 
                 <button type="submit" class="btn-submit" id="submitBtn">
@@ -271,6 +272,7 @@
     <script>
         lucide.createIcons();
 
+        // URL Google Apps Script Anda sudah terpasang di sini
         const API_URL = "https://script.google.com/macros/s/AKfycbwtf3reweTkSYSylrNxBto6_icTTJy4Ap1OfRVPZVMtTEhh6sE-OSCe9fj7_3jqPcHi/exec";
 
         document.getElementById('date-now').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -321,11 +323,25 @@
             };
 
             try {
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                Swal.fire('Berhasil!', 'Artikel telah diterbitkan ke Spreadsheet dan akan tampil di Website.', 'success');
+                // Mengirimkan data ke Spreadsheet melalui URL Apps Script yang Anda berikan
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(payload) 
+                });
+                
+                Swal.fire({
+                    title: 'Berhasil Terbit!',
+                    text: 'Artikel profesional Anda telah berhasil masuk ke database Nuansa.',
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb'
+                });
+                
                 document.getElementById('cmsForm').reset();
+                document.querySelectorAll('.seo-badge').forEach(b => b.innerText = '0');
+                
             } catch (error) {
-                Swal.fire('Error', 'Gagal terhubung ke database.', 'error');
+                Swal.fire('Error', 'Gagal terhubung ke database. Periksa koneksi atau URL Apps Script Anda.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<i data-lucide="globe"></i> Publikasikan ke Nuansa.net`;
